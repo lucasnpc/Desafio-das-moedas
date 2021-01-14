@@ -2,65 +2,39 @@
 
 using namespace std;
 
-int obterFormasPossiveis(int moedas[], int cents, int contadorPossibilidades)
+int obterFormasPossiveis(int moedas[], int cents)
 {
-    cout << cents << endl;
-    int aux = cents;
-    while (aux > 0)
+    if (cents < 0)
     {
-        aux -= moedas[0];
+        return 0;
     }
-
-    contadorPossibilidades++;
-    for (int i = 0; i < 3; i++)
+    int contadorPossibilidades[cents + 1] = {};
+    contadorPossibilidades[0] = 1;
+    for (int i = 0; i < 3; ++i)
     {
-        if (cents == moedas[i] && i > 0)
+        for (int j = moedas[i]; j <= cents; ++j)
         {
-            contadorPossibilidades++;
-        }
-        else if (moedas[i] > 1)
-        {
-            contadorPossibilidades += cents / moedas[i];
+            contadorPossibilidades[j] += contadorPossibilidades[j - moedas[i]];
         }
     }
-    aux = cents;
-    for (int i = 3; i < 0; i++)
-    {
-        if (moedas[i] < aux)
-        {
-            aux - moedas[i];
-            while (aux > 0)
-            {
-                aux -= moedas[0];
-            }
-            if (aux == 0)
-            {
-                contadorPossibilidades++;
-            }
-        }
-    }
-
-    return contadorPossibilidades;
+    
+    return contadorPossibilidades[cents];
 }
 
 int main(int argc, char *argv[])
 {
     int moedas[] = {1, 5, 10, 25};
     int cents;
-    int contadorPossibilidades = 0;
+    
     cout << "Entre os centavos que voce quer: ";
     cin >> cents;
     if (cents == 0)
     {
         cout << "Existe 0 formas possiveis de representar " << cents;
     }
-    else if (cents == 1)
-    {
-        cout << "Existe 1 forma possivel de representar " << cents;
-    }
     else
     {
-        cout << "Existem " << obterFormasPossiveis(moedas, cents, contadorPossibilidades) << " formas de representar " << cents;
+        cout << "Existem " << obterFormasPossiveis(moedas, cents) << " formas de representar " << cents;
     }
 
     return 0;
